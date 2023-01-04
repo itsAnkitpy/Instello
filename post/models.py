@@ -17,8 +17,8 @@ class Tag(models.Model):
         verbose_name = 'Tag'
         verbose_name_plural = 'Tags'
     # IF a user clicks on any Tag it takes them to similar posts as mentioned in tag
-    def get_absolute_url(self):
-        return reverse('tags', args=[self.slug])
+    # def get_absolute_url(self):
+    #     return reverse('tags', args=[self.slug])
 
     def __str__(self):
         return self.title
