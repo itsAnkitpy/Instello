@@ -1,5 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from post.forms import NewPostform
 from .models import *
 
 def home(request):
@@ -10,10 +11,38 @@ def home(request):
 
     for post in posts:
         group_ids.append(post.post_id)
-    # Show all posts in group_ids - from latest to oldest 
+    # Show all posts in group_ids - from latest to oldest   
     post_items = Post.objects.filter(id__in=group_ids).all().order_by('-posted')
 
     context = {
         'post_items':post_items,
     } 
     return render(request, 'index.html',context)
+
+
+def NewPost(request):
+    user = request.user.id
+    # profile = get_object_or_404(Profile, user=user)
+    tags_obj = []
+    
+    if request.method == "POST":
+        form = NewPostform(request.POST, request.FILES)
+        if form.is_valid():
+            picture = form.cleaned_data.get('picture')
+            caption = form.cleaned_data.get('caption')
+            tag_form = form.cleaned_data.get('tags')
+            tag_list = list(tag_form.split(','))
+
+            for tag in tag_list:
+                t, created = Tag.objects.get_or_create(title=tag)
+                tags_obj.append(t)
+            p, created = Post.objects.get_or_create(picture=picture, caption=caption, user_id=user)
+            p.tags.set(tags_obj)
+            p.save()
+            return redirect('home')
+    else:
+        form = NewPostform()
+    context = {
+        'form': form
+    }
+    return render(request, 'newpost.html', context)

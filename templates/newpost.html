@@ -1,0 +1,7 @@
+<form action="" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+  <div class="logo">
+    <h3 style="padding: 20px; font-size: 20px;">Create New Post</h3>
+  </div>
+  {{form}}
+  <button class="form-btn" type="submit">Post</button>
