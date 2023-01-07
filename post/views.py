@@ -2,7 +2,8 @@ from django.shortcuts import render,redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.http import HttpResponseRedirect
- 
+
+from user_profile.models import Profile
 from post.forms import NewPostform
 from .models import *
 
@@ -77,5 +78,17 @@ def like(request, post_id):
         
     post.likes = current_likes
     post.save()
-    # return HttpResponseRedirect(reverse('post-details', args=[post_id]))
+     
+    return HttpResponseRedirect(reverse('post-details', args=[post_id]))
+
+def favourite(request, post_id):
+    user = request.user
+    post = Post.objects.get(id=post_id)
+    profile = Profile.objects.get(user=user)
+
+    # If the post is already in favourites remove it, else add to favourites
+    if profile.favourite.filter(id=post_id).exists():
+        profile.favourite.remove(post)
+    else:
+        profile.favourite.add(post)
     return HttpResponseRedirect(reverse('post-details', args=[post_id]))
