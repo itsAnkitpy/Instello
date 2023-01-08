@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.urls import resolve
 from django.core.paginator import Paginator
 
-from post.models import Post
+from post.models import Post,Follow
 from user_profile.models import Profile
 
 def UserProfile(request, username):
@@ -16,6 +16,13 @@ def UserProfile(request, username):
     else:
         posts = profile.favourite.all()
 
+    # Profile Stats
+    posts_count = Post.objects.filter(user=user).count()
+    following_count = Follow.objects.filter(follower=user).count()
+    followers_count = Follow.objects.filter(following=user).count()
+    # count_comment = Comment.objects.filter(post=posts).count()
+    # follow_status = Follow.objects.filter(following=user, follower=request.user).exists()
+
     # pagination
     paginator = Paginator(posts, 8)
     page_number = request.GET.get('page')
@@ -25,6 +32,9 @@ def UserProfile(request, username):
         'posts': posts,
         'profile':profile,
         'posts_paginator':posts_paginator,
+        'posts_count':posts_count,
+        'following_count':following_count,
+        'followers_count':followers_count,
     }
 
     return render(request, 'profile.html', context)
