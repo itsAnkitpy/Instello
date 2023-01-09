@@ -56,11 +56,11 @@
                     {% endif %}
                     <br><br>
                     {% if request.user.is_authenticated and request.user != profile.user %}
-                    {% if follow_status == True %}
-                    <a href="#" class="btn profile-edit-btn" style="color: red;">Unfollow</a> <br><br>
-                    {% else %}
-                    <a href="#" class="btn profile-edit-btn" style="color: green;">Follow</a> <br><br>
-                    {% endif %}
+                        {% if follow_status == True %}
+                            <a href="{% url 'follow' profile.user 0 %}" class="btn profile-edit-btn" style="color: red;">Unfollow</a> <br><br>
+                            {% else %}
+                            <a href="{% url 'follow' profile.user 1 %}" class="btn profile-edit-btn" style="color: green;">Follow</a> <br><br>
+                        {% endif %}
                     {% endif %}
 
                     {% if request.user.is_authenticated and request.user != profile.user %}

@@ -4,15 +4,16 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from user_profile.views import Profile
-from user_profile.views import UserProfile
+from user_profile.views import UserProfile,follow
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('post/', include('post.urls')),
     
-
+    # Profile URL section
     path('<username>/', UserProfile, name='profile'),
     path('<username>/saved/', UserProfile, name='favourite'),
+    path('<username>/follow/<option>/', follow, name='follow'),
 
 ]
 
