@@ -9,6 +9,7 @@ from user_profile.views import UserProfile,follow
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('post/', include('post.urls')),
+    path('users/', include('user_profile.urls')),
     
     # Profile URL section
     path('<username>/', UserProfile, name='profile'),

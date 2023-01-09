@@ -8,6 +8,7 @@ from django.db import transaction
 
 from post.models import Post,Follow,Feed
 from user_profile.models import Profile
+from .forms import EditProfileForm, UserRegisterForm 
 
 def UserProfile(request, username):
     user = get_object_or_404(User, username=username)
@@ -42,6 +43,29 @@ def UserProfile(request, username):
     }
 
     return render(request, 'profile.html', context)
+
+def EditProfile(request):
+    user = request.user.id
+    profile = Profile.objects.get(user__id=user)
+
+    if request.method == "POST":
+        form = EditProfileForm(request.POST, request.FILES, instance=request.user.profile)
+        if form.is_valid():
+            profile.image = form.cleaned_data.get('image')
+            profile.first_name = form.cleaned_data.get('first_name')
+            profile.last_name = form.cleaned_data.get('last_name')
+            profile.location = form.cleaned_data.get('location')
+            profile.url = form.cleaned_data.get('url')
+            profile.bio = form.cleaned_data.get('bio')
+            profile.save()
+            return redirect('profile', profile.user.username)
+    else:
+        form = EditProfileForm(instance=request.user.profile)
+
+    context = {
+        'form':form,
+    }
+    return render(request, 'edit_profile.html', context)
 
 def follow(request, username, option):
     user = request.user
