@@ -5,6 +5,8 @@ from django.http import HttpResponseRedirect
 
 from user_profile.models import Profile
 from post.forms import NewPostform
+from comments.models import Comment
+from comments.forms import NewCommentForm
 from .models import *
 
 def home(request):
@@ -53,12 +55,26 @@ def NewPost(request):
 
 
 def PostDetail(request, post_id):
+    user = request.user
     post = get_object_or_404(Post, id=post_id)
-    
+    comments = Comment.objects.filter(post=post).order_by('-date')
+
+    if request.method == "POST":
+        form = NewCommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = post
+            comment.user = user
+            comment.save()
+            return HttpResponseRedirect(reverse('post-details', args=[post.id]))
+    else:
+        form = NewCommentForm()
+
 
     context = {
         'post': post,
-        
+        'form': form,
+        'comments': comments, 
     }
 
     return render(request, 'postdetail.html', context)
