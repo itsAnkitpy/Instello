@@ -11,8 +11,8 @@ from .models import *
 
 def home(request):
     # Fetching the info of the logged in user and displaying it in index.html
-    user = request.user
-    posts = Feed.objects.filter(user=user)
+   
+    posts = Feed.objects.filter(user=request.user)
     group_ids = []
 
     for post in posts:

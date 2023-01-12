@@ -42,7 +42,9 @@ INSTALLED_APPS = [
     'post',
     'user_profile',
     'comments',
+    'directs',
     'crispy_forms',
+    
 ]
 
 MIDDLEWARE = [
