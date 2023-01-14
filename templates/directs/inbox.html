@@ -73,7 +73,7 @@
                     <div class="px-4 d-none d-md-block">
                         <div class="d-flex align-items-center">
                             <div class="flex-grow-1">
-                                <a href="#" class="btn btn-success mt-4 mb-4">New Message</a>
+                                <a href="{% url 'search_users' %}" class="btn btn-success mt-4 mb-4">Search</a>
                             </div>
                         </div>
                     </div>
@@ -180,7 +180,7 @@
 
 
                     <div class="flex-grow-0 py-3 px-4 border-top">
-                        <form method="POST" role='form' action="{% url 'send_message' %}">
+                        <form method="POST" action="#">
                             {% csrf_token %}
                             <div class="input-group">
                                 <input type="hidden" name="to_user" id="" value="{{active_direct}}">
@@ -190,6 +190,7 @@
                         </form>
 
                     </div>
+
                 </div>
             </div>
         </div>

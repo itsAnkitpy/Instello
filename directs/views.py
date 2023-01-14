@@ -1,6 +1,9 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.db.models import Q
+from django.core.paginator import Paginator 
+
 from directs.models import Message
 
 
@@ -54,3 +57,21 @@ def SendMessage(request):
         to_user = User.objects.get(username=to_user_username)
         Message.sender_message(from_user, to_user, body)
         return redirect('message')
+
+
+def UserSearch(request):
+    query = request.GET.get('q')
+    context = {}
+    if query:
+        users = User.objects.filter(Q(username__icontains=query))
+
+        # Paginator
+        paginator = Paginator(users, 8)
+        page_number = request.GET.get('page')
+        users_paginator = paginator.get_page(page_number)
+
+        context = {
+            'users': users_paginator,
+            }
+
+    return render(request, 'directs/search.html', context)
