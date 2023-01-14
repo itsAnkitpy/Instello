@@ -180,7 +180,7 @@
 
 
                     <div class="flex-grow-0 py-3 px-4 border-top">
-                        <form method="POST" action="#">
+                        <form method="POST" role='form' action="{% url 'send_message' %}">
                             {% csrf_token %}
                             <div class="input-group">
                                 <input type="hidden" name="to_user" id="" value="{{active_direct}}">
