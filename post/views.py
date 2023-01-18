@@ -2,6 +2,8 @@ from django.shortcuts import render,redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.http import HttpResponseRedirect
+from django.core.paginator import Paginator
+from django.db.models import Q
 
 from user_profile.models import Profile
 from post.forms import NewPostform
@@ -11,7 +13,11 @@ from .models import *
 
 def home(request):
     # Fetching the info of the logged in user and displaying it in index.html
-   
+    user = request.user
+    all_users = User.objects.all()
+    
+    profile = Profile.objects.all()
+ 
     posts = Feed.objects.filter(user=request.user)
     group_ids = []
 
@@ -20,8 +26,18 @@ def home(request):
     # Show all posts in group_ids - from latest to oldest   
     post_items = Post.objects.filter(id__in=group_ids).all().order_by('-posted')
 
+    query = request.GET.get('q')
+    if query:
+        users = User.objects.filter(Q(username__icontains=query))
+
+        paginator = Paginator(users, 6)
+        page_number = request.GET.get('page')
+        users_paginator = paginator.get_page(page_number)
+
     context = {
         'post_items':post_items,
+        'profile': profile,
+        'all_users': all_users,
     } 
     return render(request, 'index.html',context)
 
